@@ -3,6 +3,9 @@ learn-d3
 
 A quick guide to using D3 in your next awesome project
 
+The best way to learn is to just get started.
+Clone/Fork this repo, open the demo/index.html & script.js and play!
+
 
 
 
