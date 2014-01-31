@@ -4,6 +4,4 @@ var p = d3.select("body").selectAll("p")
 .data(theData)
 .enter()
 .append("p")
-.text("hello ");
-
-console.log(p);
+.text( function (d,i) {	return "i = " + i + " d = "+d; } );
