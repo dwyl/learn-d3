@@ -1,34 +1,15 @@
- var circleData = [
-	{ "cx": 20, "cy": 20, "radius": 20, "color" : "green" },
-	{ "cx": 70, "cy": 70, "radius": 20, "color" : "purple" }];
-
+// see: https://www.dashingd3js.com/d3js-axes
 var svgContainer = d3.select("body").append("svg")
-	.attr("width",200)
-	.attr("height",200);
+	.attr("width", 400)
+	.attr("height", 100);
 
-// add circles to the circleGroup
-var circles = svgContainer.selectAll("circle")
-	.data(circleData)
-	.enter()
-	.append("circle");
 
-var circleAttributes = circles
-	.attr("cx", function (d) { return d.cx; })
-	.attr("cy", function (d) { return d.cy; })
-	.attr("r", function (d) { return d.radius; })
-	.style("fill", function (d) { return d.color; });
+var axisScale = d3.scale.linear()
+	.domain([0,100])
+	.range([0,400]);
 
-// Add the SVG Text Element to the svgContainer
-var text = svgContainer.selectAll("text")
-	.data(circleData)
-	.enter()
-	.append("text");
+var xAxis = d3.svg.axis()
+.scale(axisScale);
 
-// Add SVG Text Element Attributes
-var textLabels = text
-	.attr("x", function(d) { return d.cx + 20; })
-	.attr("y", function(d) { return d.cy + 5; })
-	.text( function (d) { return "( " + d.cx + ", " + d.cy +" )"; })
-	.attr("font-family", "sans-serif")
-	.attr("font-size", "13px")
-	.attr("fill", function (d) { return d.color; });
+var xAxisGroup = svgContainer.append("g")
+	.call(xAxis);
