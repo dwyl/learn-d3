@@ -1,21 +1,13 @@
  var circleData = [
 	{ "cx": 20, "cy": 20, "radius": 20, "color" : "green" },
 	{ "cx": 70, "cy": 70, "radius": 20, "color" : "purple" }];
- 
- var rectangleData = [
-	{ "rx": 110, "ry": 110, "height": 30, "width": 30, "color" : "blue" },
-	{ "rx": 160, "ry": 160, "height": 30, "width": 30, "color" : "red" }];
 
 var svgContainer = d3.select("body").append("svg")
 	.attr("width",200)
 	.attr("height",200);
 
-// add SVG Group and transform
-var circleGroup = svgContainer.append("g")
-	.attr("transform", "translate(80,0)");
-
 // add circles to the circleGroup
-var circles = circleGroup.selectAll("circle")
+var circles = svgContainer.selectAll("circle")
 	.data(circleData)
 	.enter()
 	.append("circle");
@@ -26,15 +18,17 @@ var circleAttributes = circles
 	.attr("r", function (d) { return d.radius; })
 	.style("fill", function (d) { return d.color; });
 
-// Rectangles added to the svgContainer
-var rectangles = svgContainer.selectAll("rect")
-	.data(rectangleData)
+// Add the SVG Text Element to the svgContainer
+var text = svgContainer.selectAll("text")
+	.data(circleData)
 	.enter()
-	.append("rect");
+	.append("text");
 
-var rectangleAttributes = rectangles
-	.attr("x", function (d) { return d.rx; })
-	.attr("y", function (d) { return d.ry; })
-	.attr("height", function (d) { return d.height; })
-	.attr("width", function (d) { return d.width; })
-	.style("fill", function(d) { return d.color; });
+// Add SVG Text Element Attributes
+var textLabels = text
+	.attr("x", function(d) { return d.cx + 20; })
+	.attr("y", function(d) { return d.cy + 5; })
+	.text( function (d) { return "( " + d.cx + ", " + d.cy +" )"; })
+	.attr("font-family", "sans-serif")
+	.attr("font-size", "13px")
+	.attr("fill", function (d) { return d.color; });
