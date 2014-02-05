@@ -11,7 +11,9 @@ web standards gives you the full capabilities of modern browsers without
 tying yourself to a proprietary framework, combining powerful visualization 
 components and a data-driven approach to DOM manipulation.
 
->> Found the best d3 Tutorial: dashingd3js.com [look no further!]
+***First*** visit http://dashingd3js.com and go through all the *basic* tutorials.
+
+
 
 
 ## Useful Links
