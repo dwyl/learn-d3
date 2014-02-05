@@ -1,7 +1,7 @@
 <html>
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 <head>
-<title>D3.js Dashboard Introduction</title>
+<title>Activity Graph</title>
 <script src="http://d3js.org/d3.v2.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
@@ -37,13 +37,13 @@ $(document).ready(function() {
 			// this is a temporary data object
 		tmpObj.date = new Date(startingDate.getFullYear(), startingDate.getMonth(), startingDate.getDate()+i);				
 			// the data for this data object. Increment it from the starting date.
-		tmpObj.DAU 	= Math.round(Math.random() * 300);  			
+		tmpObj.DAU 	= Math.round(Math.random() * 3);  			
 			// random value. Round it to a whole number.
 		data.push(tmpObj); 							
 			// push the object into our data array
 	}
 
-	var width = 300, height = 300;
+	var width = 500, height = 300;
 	var margin = {top: 30, right: 10, bottom: 40, left: 60}, width = width - margin.left - margin.right, height = height - margin.top - margin.bottom;
 	// these are graph size settings
 
@@ -97,7 +97,7 @@ $(document).ready(function() {
 	    .attr("y", 6)
 	    .attr("dy", "-3.4em")
 	    .attr("transform", "rotate(-90)")
-	    .text('Daily Active Users');
+	    .text('# Activities Logged');
 
 	var line = d3.svg.line()
 		.x(function(d) { return x(d["date"]); })
@@ -120,24 +120,11 @@ $(document).ready(function() {
 			.enter()
 			.append('svg:circle')
 			.attr('class', 'dot')
-			.attr('fill', function() { return "red"; })
+			.attr('fill', function() { return "green"; })
 			.attr('cx', function(d) { return x(d["date"]); })
 			.attr('cy', function(d) { return y(d["DAU"]); })
 			.attr('r', function() { return 3; })
-			.on("mouseover", function(d) {
-  				d3.select(this)
-					.attr("r", 8)
-					.attr("class", "dot-selected")
-					.transition()
-      					.duration(750);
-			})
-			.on("mouseout", function(d) {
-  				d3.select(this)
-					.attr("r", 3)
-					.attr("class", "dot")
-					.transition()
-      					.duration(750);
-			});
+
 
 });
 
@@ -164,7 +151,6 @@ body {
 }
 
 .dot {
-
   stroke-width: 1.5px;
 }
 
@@ -190,7 +176,7 @@ body {
 
 <body>
 
-	<h1>A D3.js Dashboard</h1>
+	<h1>Activity Graph</h1>
 
 	<div id="metrics">
 	</div>
