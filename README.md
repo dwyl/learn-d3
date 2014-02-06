@@ -15,7 +15,13 @@ If you are completely new to D3 or Data Visualisation,
 ***First*** visit http://dashingd3js.com and go through all the *basic* tutorials.
 
 
+### Demo
 
+```
+git clone git@github.com:nelsonic/learn-d3.git
+cd learn-d3/demo
+python -m SimpleHTTPServer
+```
 
 ## Useful Links
 
