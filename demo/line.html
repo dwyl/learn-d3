@@ -27,6 +27,20 @@ function getMinObjectValue(this_array, element) {
 
 $(document).ready(function() {
 
+$( function(){
+  $.get("achievementsbydate.json", function(abd) {
+    $.get("learnersbydate.json", function(lbd) {
+      $.each(lbd, function(index, value){
+        console.log(value[0] +" >> " +value[1]);
+      })
+      $.each(abd, function(index, value){
+        console.log(value[0] +" >> " +value[1]);
+      })
+    })
+  })
+})
+
+
 	var data = [];  								
 	// this is our data array
 	var startingDate = new Date(2012, 8, 18);		
