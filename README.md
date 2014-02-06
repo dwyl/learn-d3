@@ -11,6 +11,7 @@ web standards gives you the full capabilities of modern browsers without
 tying yourself to a proprietary framework, combining powerful visualization 
 components and a data-driven approach to DOM manipulation.
 
+If you are completely new to D3 or Data Visualisation, 
 ***First*** visit http://dashingd3js.com and go through all the *basic* tutorials.
 
 
