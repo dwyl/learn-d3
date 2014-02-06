@@ -19,9 +19,11 @@ If you are completely new to D3 or Data Visualisation,
 
 ```
 git clone git@github.com:nelsonic/learn-d3.git
-cd learn-d3/demo
+cd learn-d3
 python -m SimpleHTTPServer
 ```
+
+Now visit: http://localhost:8000/demo/line.html
 
 ## Useful Links
 

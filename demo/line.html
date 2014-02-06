@@ -30,15 +30,21 @@ $(document).ready(function() {
 $( function(){
   $.get("achievementsbydate.json", function(abd) {
     $.get("learnersbydate.json", function(lbd) {
-      $.each(lbd, function(index, value){
-        console.log(value[0] +" >> " +value[1]);
-      })
-      $.each(abd, function(index, value){
-        console.log(value[0] +" >> " +value[1]);
-      })
+      // $.each(lbd, function(index, value){
+      //   console.log(value[0] +" >> " +value[1]);
+      // })
+      // $.each(abd, function(index, value){
+      //   console.log(value[0] +" >> " +value[1]);
+      // })
+      renderGraph(abd, lbd)
     })
   })
 })
+
+function renderGraph(xData, yData){
+	console.log(xData);
+	console.log(yData);
+}
 
 
 	var data = [];  								
