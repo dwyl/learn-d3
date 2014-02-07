@@ -25,11 +25,154 @@ function getMinObjectValue(this_array, element) {
 	return values[0];
 }
 
+// Our end result is a graph like this:
+//  __________________________
+//  | # activities per user  |
+//  | 3|     .   .           |
+//  | 2|	   .             |
+//  | 1| .         .         |
+//  | 0|___._________._      | 
+//  |    M T W T F S S  Date |
+//  |________________________|
+//
+// Y-axis: Activities per user per day
+// X-axis: Date MM/DD
+//
+// To derive our co-ordinate data we will get data from MySQL in form of:
+// learnersbydate.json
+// [["2014-01-23",32],["2014-01-28",1],["2014-01-31",3],["2014-02-02",2]]
+// 
+// achievementsbydate.json
+// [["2014-01-23",4],["2014-01-24",8],["2014-01-27",8],["2014-01-28",1],
+//  ["2014-01-29",3],["2014-02-03",10],["2014-02-04",1],["2014-02-05",2]]
+//
+// Get dateRange by taking the first date a user was created [startDate]
+// and creating a range till today [endDate] 
+// ( Later on we need to add a date range limit to ensure we only get the 
+// 	last 365 days of data to avoid two entries for 01-01 etc. #later )
+
+// We need to parse the first date in our learnersbydate series
+// parse a date in yyyy-mm-dd format return full JS Date object
+// see: http://stackoverflow.com/questions/2587345/javascript-date-parse
+function parseDate(input) {
+	var parts = input.split('-'),
+  // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
+  	date = new Date(parts[0], parts[1]-1, parts[2]); // Note: months are 0-based
+  	console.log(input +" >> " +date);
+	return date
+}
+// parseDate("2014-01-23");
+
+// if a number is below 10 and we want it to have a leading zero
+// 01 or 06 instead of 1 or 6 we need to add the leading zero mannually
+function addLeadingZero(input) {
+	if(parseInt(input, 10) < 10){
+		return "0"+input;
+	} else {
+		return input;  // no need ot add leading zero
+	}
+}
+// console.log("6 with leading zero is: " +addLeadingZero(6));
+
+
+// Takes full JS Date e.g: Thu Feb 06 2014 13:04:44 GMT+0000 (GMT)
+// and returns YYYY-MM-DD e.g. 2014-02-06
+function simpleDate(input) {
+
+	var DD, MM, YYYY;
+	// if input is undefined or not a valid date
+	if(typeof endDate === 'undefined' || !input.getDate()) {
+		var input = new Date();            // today's date
+	}
+
+	DD            = input.getDate();
+	MM            = input.getMonth()+1;    // +1 because January is 0!
+	YYYY          = input.getFullYear();
+	return YYYY+"-"+addLeadingZero(MM)+"-"+addLeadingZero(DD);
+}
+// console.log("Simple Date: "+simpleDate());
+
+// returns array of days between startDate and endDate
+// endDate defaults to today if not specified
+// expects format YYYY-MM-DD
+function dateRange(startDate, endDate) {
+	var	dateRange     = [];                    // array to be returned
+
+	if(typeof endDate === 'undefined') {       // check startDate is Set
+		var d = parseDate(startDate);          // used in while loop below
+	} else {
+		return false; // empty
+	}
+
+	if(typeof endDate === 'undefined') {       // if endDate is not set
+		var today     = new Date();            // today's full JS date
+
+		// endDate       = parseDate(endDate);    // Today's date without time
+	} else {
+		endDate = parseDate(endDate);
+	}
+
+	console.log()
+	while(d < endDate) {
+
+		dateRange.push(d);
+
+		// Adding a day to a date: http://stackoverflow.com/questions/563406
+		var nextDate = parseDate(d), // parse the date string into JS
+		// add 1 day to the original startDate
+		i;
+
+	}
+
+	return dateRange;
+}
+// addapted from: http://stackoverflow.com/questions/563406/
+function addDayToDate(input) {
+	if(typeof input === 'undefined') {
+		console.log("No input supplied to addDayToDate!");
+		return false;
+	}
+	if(typeof input.getDate === "undefined" || typeof input.getDate !== "function") {
+		console.log("Parsing date ... "+input)
+		input = parseDate(input);
+	}
+	var nextDay = new Date();
+	nextDay.setDate(input.getDate()+1);
+	console.log(input + " | +1 day >> " +nextDay);
+	return nextDay;
+}
+
+// console.log( parseDate("2014-01-23") > parseDate("2014-02-02") );
+console.log("2014-01-23 + 1 = "+simpleDate(addDayToDate("2014-01-23")));
+// console.log(new Date());
+//
+//
+// Next we Create an object of Cumulative users for each date in the range
+// ( Rather complicating the SQL Query I derive from the raw data )
+//
+// using the learnersbydate data above:
+// usersPerDate = { "2014-01-23":32, "2014-01-24":32, "2014-01-25":32, 
+// "2014-01-26":32, "2014-01-27":32, "2014-01-28":33, "2014-01-29":33, 
+// "2014-01-30":33, "2014-01-31":36, "2014-02-01":36, "2014-02-02":38 };
+// 
+// Next we divide the numbe of achievements by number of learners
+// 
+
+//
+
 $(document).ready(function() {
 
 $( function(){
-  $.get("achievementsbydate.json", function(abd) {
-    $.get("learnersbydate.json", function(lbd) {
+	// since there is no activity without users we derive our dateRange
+	// from the first user creation date.
+	var dateRange = []; 
+	$.get("learnersbydate.json", function(lbd) {
+
+
+  		$.get("achievementsbydate.json", function(abd) {
+
+
+    
       // $.each(lbd, function(index, value){
       //   console.log(value[0] +" >> " +value[1]);
       // })
@@ -41,12 +184,13 @@ $( function(){
   })
 })
 
+
 function renderGraph(xData, yData){
-	console.log(xData);
-	console.log(yData);
+	// console.log(xData);
+	// console.log(yData);
 }
 
-
+	// adapted from: https://gist.github.com/ESeufert/3394672
 	var data = [];  								
 	// this is our data array
 	var startingDate = new Date(2012, 8, 18);		
