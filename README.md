@@ -19,11 +19,13 @@ If you are completely new to D3 or Data Visualisation,
 
 ```
 git clone git@github.com:nelsonic/learn-d3.git
-cd learn-d3
+cd learn-d3/demo
 python -m SimpleHTTPServer
 ```
 
-Now visit: http://localhost:8000/demo/line.html
+Now visit: http://localhost:8000/line.html
+
+!["OMTM"](http://i62.tinypic.com/300bfyv.png "Activity Graph")
 
 ## Useful Links
 
