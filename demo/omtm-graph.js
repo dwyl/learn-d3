@@ -23,12 +23,25 @@ $(document).ready(function() {
 		aapd = {};        // average achievements per day
 
 	// To derive our co-ordinate data we will get data from MySQL in form of:
-	// learnersbydate.json example:
+	// learnersbydate.json MySQL example:
 	// [["2014-01-23",32],["2014-01-28",1],["2014-01-31",3],["2014-02-02",2]]
-	// 	
+	// PostgreSQL example:
+	// [{"date":"2014-02-10","count":"73"}]
 	$.get("learnersbydate.json", function(lbd) {
 
-		var startDate = lbd[0][0]; // first date in the learnersbydate.json is date first user was created
+		var date, count, startDate;
+		console.log(lbd[0])
+		
+		if(typeof lbd[0][0] === "undefined"){
+			if(lbd.length > 1) {
+				startDate = lbd[lbd.length-1]["date"];
+			}
+
+		} else {
+			startDate = lbd[0][0];
+		}
+		// console.log("startDate >> ",startDate);
+		// first date in the learnersbydate.json is date first user was created
 		// since there is no activity without users we derive our dateRange
 		// from the first user creation date.
 		dateRange = DU.dateRange(startDate);
@@ -39,8 +52,8 @@ $(document).ready(function() {
 		// Next we Create an object of Cumulative users for each date in the range
 		// ( Rather complicating the SQL Query I derive from the raw data )
 		while(i < dateRange.length) {
-			if(dateRange[i] === lbd[j][0]) {
-				learnerCount = learnerCount + parseInt(lbd[j][1], 10);
+			if(dateRange[i] === lbd[j]["date"]) {
+				learnerCount = learnerCount + parseInt(lbd[j]["count"], 10);
 				if(j < lbd.length -1){
 					j = j + 1;
 				}
@@ -50,18 +63,25 @@ $(document).ready(function() {
 			i = i + 1;
 		};
 		// console.log(learnersByDate);
-			// achievementsbydate.json example:
+			// achievementsbydate.json MySQL example:
 			// [["2014-01-23",4],["2014-01-24",8],["2014-01-27",8],["2014-01-28",1],
 			// ["2014-01-29",3],["2014-02-03",10],["2014-02-04",1],["2014-02-05",2]]
+			// PostgreSQL example: (notice date is decending)
+			// [{"date":"2014-02-11","count":"11"},{"date":"2014-02-10","count":"2"}]
+
 			$.get("achievementsbydate.json", function(abd) {
-				var i = 0, j = 0, aa = 0; // average achivements
+				var i = 0, j = 0, aa = 0, // average achivements
+				aDate; // achievementDate
 				while(i < dateRange.length) {
-					if(dateRange[i] === abd[j][0]) {
+					aDate  = abd[j]["date"] || abd[j][0];
+					aCount = parseInt(abd[j]["count"], 10) || parseInt(abd[j][1], 10);
+					// console.log("aDate : "+aDate +" | aCount : "+aCount);
+					if(dateRange[i] === aDate) {
 					// using the learnersbydate data above:
 					// usersPerDate = { "2014-01-23":32, "2014-01-24":32, "2014-01-25":32, 
 					// "2014-01-26":32, "2014-01-27":32, "2014-01-28":33, "2014-01-29":33, 
 					// "2014-01-30":33, "2014-01-31":36, "2014-02-01":36, "2014-02-02":38 };
-					aa = parseInt(abd[j][1], 10) / parseInt(learnersByDate[dateRange[i]], 10);
+					aa =  aCount / parseInt(learnersByDate[dateRange[i]], 10);
 					if(j < abd.length -1){
 						j = j + 1;
 					}
@@ -69,7 +89,7 @@ $(document).ready(function() {
 					aa = 0;
 				}
 				aapd[dateRange[i]] = aa;
-				console.log(dateRange[i] +" : " +aa )
+				// console.log(dateRange[i] +" : " +aa )
 				i = i + 1;
 				}
 				console.log(aapd);
@@ -139,7 +159,7 @@ $(document).ready(function() {
 		var xAxis = d3.svg.axis()
 			.scale(x)
 			.orient("bottom")
-			.ticks(40);
+			.ticks(dateRange.length-1);
 
 		vis.append("g")
 		    .attr("class", "axis")
